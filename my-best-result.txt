@@ -1,0 +1,10 @@
+word=PARENCEPHA*IC))
+2018-07-12 13:54:13.177 DEBUG 10087 --- [           main] com.example.hangman.service.PlayService  : action guess >>>>
+2018-07-12 13:54:13.204 DEBUG 10087 --- [           main] com.example.hangman.service.PlayService  : guess L >>>>
+2018-07-12 13:54:13.207 DEBUG 10087 --- [           main] com.example.hangman.service.PlayService  : guess result <<<< NextWordResponse(sessionId=e37932aa-4cb5-4360-8eff-0e0af419075a, data=NextWordResponse.DataWrapper(wrongGuessCountOfCurrentWord=0, totalWordCount=80, word=PARENCEPHALIC))
+2018-07-12 13:54:13.207 DEBUG 10087 --- [           main] com.example.hangman.service.PlayService  : current word score <<< 20
+2018-07-12 13:54:13.207 DEBUG 10087 --- [           main] com.example.hangman.service.PlayService  : total score <<< 1018
+2018-07-12 13:54:13.207 DEBUG 10087 --- [           main] com.example.hangman.service.PlayService  : action result >>>>
+2018-07-12 13:54:13.212 DEBUG 10087 --- [           main] com.example.hangman.service.PlayService  : ++++++++++++++++ result +++++++++++++++++++++
+2018-07-12 13:54:13.212 DEBUG 10087 --- [           main] com.example.hangman.service.PlayService  : score: 1018
+2018-07-12 13:54:13.212 DEBUG 10087 --- [           main] com.example.hangman.service.PlayService  : ++++++++++++++++ end    +++++++++++++++++++++

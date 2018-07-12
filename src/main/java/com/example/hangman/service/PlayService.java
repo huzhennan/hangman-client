@@ -5,6 +5,7 @@ import com.example.hangman.entity.MyInfo;
 import com.example.hangman.entity.WordInfo;
 import com.example.hangman.json.GameOnResponse;
 import com.example.hangman.json.NextWordResponse;
+import com.example.hangman.json.ResultResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +71,10 @@ public class PlayService {
             actions.offer("start");
         } else if (currentWordInfo == null || needNextWord()) {
             actions.offer("next");
-        } else {
+        } else if ((!currentWordInfo.getWord().contains("*") || currentWordInfo.getGuessId() == 10)
+                && currentWordInfo.getTotalWordCount() == myInfo.getNumberOfWordsToGuess()) {
+            actions.offer("result");
+        } else  {
             actions.offer("guess");
         }
 
@@ -78,13 +82,18 @@ public class PlayService {
     }
 
     private boolean needNextWord() {
-        return !currentWordInfo.getWord().contains("*") || currentWordInfo.getGuessId() == 10;
+        return (!currentWordInfo.getWord().contains("*") || currentWordInfo.getGuessId() == 10)
+                && currentWordInfo.getTotalWordCount() < myInfo.getNumberOfWordsToGuess();
     }
 
     public void play() throws IOException {
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10000; i++) {
             String action = nextAction();
             handleAction(action);
+
+            if (action.equals("result")) {
+                break;
+            }
         }
     }
 
@@ -99,7 +108,20 @@ public class PlayService {
                 break;
             case "guess":
                 guess();
+                break;
+            case "result":
+                getResult();
+                break;
         }
+    }
+
+    private void getResult() throws IOException {
+        String sessionId = myInfo.getSessionId();
+        ResultResponse response = Requests.getResult(sessionId);
+
+        log.debug("++++++++++++++++ result +++++++++++++++++++++");
+        log.debug("score: {}", response.getData().getScore());
+        log.debug("++++++++++++++++ end    +++++++++++++++++++++");
     }
 
     public MyInfo getMyInfo() {

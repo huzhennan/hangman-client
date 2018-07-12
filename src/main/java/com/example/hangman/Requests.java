@@ -2,6 +2,7 @@ package com.example.hangman;
 
 import com.example.hangman.json.GameOnResponse;
 import com.example.hangman.json.NextWordResponse;
+import com.example.hangman.json.ResultResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.kevinsawicki.http.HttpRequest;
 import org.slf4j.Logger;
@@ -35,6 +36,11 @@ private static final String BASE_URL = "http://localhost:8080";
             "  \"guess\": \"%s\"\n" +
             "}";
 
+    private static final String GET_RESULT_JSON_FORMAT = "{\n" +
+            "  \"sessionId\": \"%s\",\n" +
+            "  \"action\": \"getResult\"\n" +
+            "}";
+
 
     public static GameOnResponse start(String email) throws IOException {
         String json = String.format(START_GAME_JSON_FORMAT, email);
@@ -49,6 +55,11 @@ private static final String BASE_URL = "http://localhost:8080";
     public static NextWordResponse guess(String sessionId, String letter) throws IOException {
         String json = String.format(GUESS_JSON_FORMAT, sessionId, letter);
         return request(json, NextWordResponse.class);
+    }
+
+    public static ResultResponse getResult(String sessionId) throws IOException {
+        String json = String.format(GET_RESULT_JSON_FORMAT, sessionId);
+        return request(json, ResultResponse.class);
     }
 
     public static <T> T request(String json, Class<T> clazz) throws IOException {
