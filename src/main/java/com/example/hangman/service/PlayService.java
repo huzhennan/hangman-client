@@ -74,7 +74,7 @@ public class PlayService {
         } else if ((!currentWordInfo.getWord().contains("*") || currentWordInfo.getGuessId() == 10)
                 && currentWordInfo.getTotalWordCount() == myInfo.getNumberOfWordsToGuess()) {
             actions.offer("result");
-        } else  {
+        } else {
             actions.offer("guess");
         }
 

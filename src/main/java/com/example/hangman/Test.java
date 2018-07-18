@@ -1,7 +1,5 @@
 package com.example.hangman;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;

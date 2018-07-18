@@ -3,7 +3,9 @@ package com.example.hangman.entity;
 import com.example.hangman.json.NextWordResponse;
 import lombok.Data;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Created by zhennan.hu on 18-7-9

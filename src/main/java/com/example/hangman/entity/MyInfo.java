@@ -1,6 +1,5 @@
 package com.example.hangman.entity;
 
-import com.example.hangman.entity.WordInfo;
 import lombok.Data;
 
 /**

@@ -15,8 +15,8 @@ import java.io.IOException;
  */
 public class Requests {
     public static final Logger log = LoggerFactory.getLogger(Requests.class);
-//    private static final String BASE_URL = "http://172.105.234.63:8080";
-private static final String BASE_URL = "http://localhost:8080";
+    //    private static final String BASE_URL = "http://172.105.234.63:8080";
+    private static final String BASE_URL = "http://localhost:8080";
     private static final String URL = BASE_URL + "/game/on";
     private static final ObjectMapper objectMapper = new ObjectMapper();
     //language=JSON

@@ -45,7 +45,7 @@ public class WordsService {
     }
 
     public List<String> getNearestWordList(String fuzzyWord, Set<String> wrongGuessLetters,
-                                            Set<String> rightGuessLetters) {
+                                           Set<String> rightGuessLetters) {
         Pattern p = Pattern.compile(String.format("^%s$", fuzzyWord.replaceAll("\\*", "\\\\w")));
 
         return words.stream()
@@ -64,8 +64,8 @@ public class WordsService {
 
         String rlt2 = result.entrySet().stream()
                 .filter(keyCountEntry ->
-                        !rightGuessLetters.contains(String.valueOf((char)keyCountEntry.getKey().intValue()))
-                        && !wrongGuessLetters.contains(String.valueOf((char)keyCountEntry.getKey().intValue()))
+                        !rightGuessLetters.contains(String.valueOf((char) keyCountEntry.getKey().intValue()))
+                                && !wrongGuessLetters.contains(String.valueOf((char) keyCountEntry.getKey().intValue()))
                 )
                 .max(Comparator.comparing(Map.Entry::getValue))
                 .map(Map.Entry::getKey)
