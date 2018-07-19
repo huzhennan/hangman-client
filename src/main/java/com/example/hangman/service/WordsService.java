@@ -9,10 +9,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -57,21 +54,18 @@ public class WordsService {
 
     public String nearestLetter(String fuzzyWord, Set<String> wrongGuessLetters, Set<String> rightGuessLetters) {
         List<String> nearestWords = getNearestWordList(fuzzyWord, wrongGuessLetters, rightGuessLetters);
+        Map<String, Long> letterStats = nearestWords.stream()
+                .map(word -> word.split(""))
+                .flatMap(Arrays::stream)
+                .collect(Collectors.groupingBy(letter -> letter, Collectors.counting()));
 
-        Map<Integer, Long> result = nearestWords.stream()
-                .flatMap(s -> s.chars().boxed())
-                .collect(Collectors.groupingBy(c -> c, Collectors.counting()));
-
-        String rlt2 = result.entrySet().stream()
-                .filter(keyCountEntry ->
-                        !rightGuessLetters.contains(String.valueOf((char) keyCountEntry.getKey().intValue()))
-                                && !wrongGuessLetters.contains(String.valueOf((char) keyCountEntry.getKey().intValue()))
-                )
+        String result = letterStats.entrySet().stream()
+                .filter(keyCountEntry -> !rightGuessLetters.contains(keyCountEntry.getKey())
+                        && !wrongGuessLetters.contains(keyCountEntry.getKey()))
                 .max(Comparator.comparing(Map.Entry::getValue))
                 .map(Map.Entry::getKey)
-                .map(key -> String.valueOf((char) key.intValue()))
-                .orElseThrow(() -> new RuntimeException("111111111"));
+                .orElseThrow(() -> new RuntimeException("no letter found."));
 
-        return rlt2;
+        return result;
     }
 }
