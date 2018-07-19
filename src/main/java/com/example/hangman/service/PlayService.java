@@ -28,9 +28,11 @@ public class PlayService {
 
     @Autowired
     private WordsService wordsService;
+    @Autowired
+    private Requests requests;
 
     public void startGame(String email) throws IOException {
-        GameOnResponse response = Requests.start(email);
+        GameOnResponse response = requests.start(email);
         myInfo = new MyInfo(email, response.getSessionId());
         myInfo.setNumberOfGuessAllowedForEachWord(response.getData().getNumberOfGuessAllowedForEachWord());
         myInfo.setNumberOfWordsToGuess(response.getData().getNumberOfWordsToGuess());
@@ -38,7 +40,7 @@ public class PlayService {
 
     public void nextWord() throws IOException {
         String sessionId = myInfo.getSessionId();
-        NextWordResponse response = Requests.nextWord(sessionId);
+        NextWordResponse response = requests.nextWord(sessionId);
 
         currentWordInfo = new WordInfo(response.getData().getWrongGuessCountOfCurrentWord(),
                 response.getData().getTotalWordCount(),
@@ -50,7 +52,7 @@ public class PlayService {
         String letter = wordsService.nearestLetter(currentWordInfo.getWord(),
                 currentWordInfo.getWrongGuessLetters(), currentWordInfo.getRightGuessLetters());
         log.debug("guess {} >>>> ", letter);
-        NextWordResponse response = Requests.guess(sessionId, letter);
+        NextWordResponse response = requests.guess(sessionId, letter);
         log.debug("guess result <<<< {}", response);
         if (!response.getData().getWord().contains("*")) {
             int currentWordScore = 20 - response.getData().getWrongGuessCountOfCurrentWord();
@@ -69,10 +71,10 @@ public class PlayService {
 
         if (myInfo == null) {
             actions.offer("start");
-        } else if (currentWordInfo == null || needNextWord()) {
+        } else if (currentWordInfo == null ||
+                (needNextWord()) && currentWordInfo.getTotalWordCount() < myInfo.getNumberOfWordsToGuess()) {
             actions.offer("next");
-        } else if ((!currentWordInfo.getWord().contains("*") || currentWordInfo.getGuessId() == 10)
-                && currentWordInfo.getTotalWordCount() == myInfo.getNumberOfWordsToGuess()) {
+        } else if (needNextWord() && currentWordInfo.getTotalWordCount() == myInfo.getNumberOfWordsToGuess()) {
             actions.offer("result");
         } else {
             actions.offer("guess");
@@ -82,8 +84,7 @@ public class PlayService {
     }
 
     private boolean needNextWord() {
-        return (!currentWordInfo.getWord().contains("*") || currentWordInfo.getGuessId() == 10)
-                && currentWordInfo.getTotalWordCount() < myInfo.getNumberOfWordsToGuess();
+        return (!currentWordInfo.getWord().contains("*") || currentWordInfo.getGuessId() == 10);
     }
 
     public void play() throws IOException {
@@ -117,7 +118,7 @@ public class PlayService {
 
     private void getResult() throws IOException {
         String sessionId = myInfo.getSessionId();
-        ResultResponse response = Requests.getResult(sessionId);
+        ResultResponse response = requests.getResult(sessionId);
 
         log.debug("++++++++++++++++ result +++++++++++++++++++++");
         log.debug("score: {}", response.getData().getScore());

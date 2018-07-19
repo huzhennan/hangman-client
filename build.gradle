@@ -32,4 +32,5 @@ dependencies {
 	compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.6'
 	compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.6'
 	compile group: 'com.google.guava', name: 'guava', version: '25.1-jre'
+	compile group: 'org.jetbrains', name: 'annotations', version: '16.0.2'
 }
