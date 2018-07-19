@@ -6,6 +6,7 @@ import com.example.hangman.entity.WordInfo;
 import com.example.hangman.json.GameOnResponse;
 import com.example.hangman.json.NextWordResponse;
 import com.example.hangman.json.ResultResponse;
+import com.example.hangman.json.SubmitResultResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.Queue;
 
 /**
@@ -25,6 +27,7 @@ public class PlayService {
     private WordInfo currentWordInfo;
     private Queue<String> actions = new LinkedList<>();
     private int score = 0;
+    private String myEmail;
 
     @Autowired
     private WordsService wordsService;
@@ -87,7 +90,9 @@ public class PlayService {
         return (!currentWordInfo.getWord().contains("*") || currentWordInfo.getGuessId() == 10);
     }
 
-    public void play() throws IOException {
+    public void play(String email) throws IOException {
+        myEmail = email;
+
         for (int i = 0; i < 10000; i++) {
             String action = nextAction();
             handleAction(action);
@@ -102,7 +107,7 @@ public class PlayService {
         log.debug("action {} >>>> ", action);
         switch (action) {
             case "start":
-                startGame("hello@bb.com");
+                startGame(myEmail);
                 break;
             case "next":
                 nextWord();
@@ -120,9 +125,31 @@ public class PlayService {
         String sessionId = myInfo.getSessionId();
         ResultResponse response = requests.getResult(sessionId);
 
+        Integer score = response.getData().getScore();
         log.debug("++++++++++++++++ result +++++++++++++++++++++");
         log.debug("score: {}", response.getData().getScore());
         log.debug("++++++++++++++++ end    +++++++++++++++++++++");
+
+        // 如果score大于1000, 上传
+        Optional.ofNullable(score)
+                .filter(s -> s > 1000)
+                .ifPresent(s -> {
+                    try {
+                        submitResult();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+    }
+
+    public void submitResult() throws IOException {
+        String sessionId = myInfo.getSessionId();
+        SubmitResultResponse submitRlt = requests.submitResult(sessionId);
+
+        log.debug("-------------- submit -----------------------");
+        log.debug("submit result: {}", submitRlt);
+        log.debug("-------------- end -----------------------");
+
     }
 
     public MyInfo getMyInfo() {

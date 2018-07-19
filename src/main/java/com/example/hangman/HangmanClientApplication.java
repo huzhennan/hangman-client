@@ -19,7 +19,7 @@ public class HangmanClientApplication {
     @Bean
     public CommandLineRunner play(PlayService playService) {
         return args -> {
-            playService.play();
+            playService.play(email);
         };
     }
 }

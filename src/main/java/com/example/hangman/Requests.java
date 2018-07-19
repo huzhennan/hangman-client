@@ -3,6 +3,7 @@ package com.example.hangman;
 import com.example.hangman.json.GameOnResponse;
 import com.example.hangman.json.NextWordResponse;
 import com.example.hangman.json.ResultResponse;
+import com.example.hangman.json.SubmitResultResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.kevinsawicki.http.HttpRequest;
 import org.intellij.lang.annotations.Language;
@@ -52,6 +53,12 @@ public class Requests {
             "  \"action\": \"getResult\"\n" +
             "}";
 
+    @Language("JSON")
+    public static final String SUBMIT_RESULT_JSON_FORMAT = "{\n" +
+            "  \"sessionId\": \"%s\",\n" +
+            "  \"action\": \"submitResult\"\n" +
+            "}";
+
     public GameOnResponse start(String email) throws IOException {
         String json = String.format(START_GAME_JSON_FORMAT, email);
         return request(json, GameOnResponse.class);
@@ -70,6 +77,11 @@ public class Requests {
     public ResultResponse getResult(String sessionId) throws IOException {
         String json = String.format(GET_RESULT_JSON_FORMAT, sessionId);
         return request(json, ResultResponse.class);
+    }
+
+    public SubmitResultResponse submitResult(String sessionId) throws IOException {
+        String json = String.format(SUBMIT_RESULT_JSON_FORMAT, sessionId);
+        return request(json, SubmitResultResponse.class);
     }
 
     private <T> T request(String json, Class<T> clazz) throws IOException {
